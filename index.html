@@ -8,29 +8,69 @@
         html, body { height: 100%; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a252f; color: white; display: flex; flex-direction: column; }
         
         /* Header Section */
-        .header-spacer { padding: 15px; text-align: center; background: #2c3e50; border-bottom: 2px solid #27ae60; }
+        .header-spacer { padding: 15px; text-align: center; background: #2c3e50; border-bottom: 2px solid #27ae60; position: relative; z-index: 10; }
         .header-spacer h1 { margin: 0; font-size: 1rem; letter-spacing: 2px; color: #2ecc71; text-transform: uppercase; }
 
-        /* Market Bar - Match Body Background */
+        /* Market Bar Placement */
         .market-bar { 
             width: 100%; 
-            background: #1a252f; /* MATCHES BODY BACKGROUND */
+            background: #1a252f; 
             display: flex; 
             justify-content: center; 
-            padding: 20px 0 0 0; /* Spacing above the widget */
+            padding: 60px 0 30px 0; 
         }
 
-        /* Widget Container - Ensure no background bleed */
+        /* CURRENCY OVERLAY - ALIGNMENT FIXED */
+        .widget-wrapper {
+            position: relative;
+            width: 350px;
+            height: 126px;
+        }
+
+        .widget-wrapper::before {
+            content: "£";
+            position: absolute;
+            /* Moved further left from 12px to 5px */
+            left: 5px;     
+            /* Adjusted height to 47px for better centering with the price */
+            top: 47px;      
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffffff;
+            z-index: 100;
+            pointer-events: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Adds pop against the widget */
+        }
+
         .widget-container { 
-            width: 350px; 
-            height: 126px; 
+            width: 100%; 
+            height: 100%; 
             background: transparent !important; 
+            /* Added slight padding to the widget itself to clear room for the £ */
+            padding-left: 10px; 
+            box-sizing: border-box;
         }
 
-        .main-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-y: auto; }
+        /* Main Content Wrapper */
+        .main-wrapper { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 0 20px 60px 20px; 
+            overflow-y: auto; 
+        }
         
-        /* Portfolio Container */
-        .container { width: 100%; max-width: 900px; background: #34495e; padding: 30px; border-radius: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; box-sizing: border-box; margin-bottom: 40px; }
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            background: #34495e; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            text-align: center; 
+            box-sizing: border-box; 
+        }
         
         .income-header { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 25px; }
         .income-label { text-transform: uppercase; letter-spacing: 2px; color: #bdc3c7; font-size: 0.8em; }
@@ -46,9 +86,9 @@
         .footer-note { margin-top: 30px; font-size: 0.65em; color: #7f8c8d; padding-bottom: 10px; }
 
         @media (max-width: 600px) { 
-            .big-number { font-size: 2.5em; } 
-            .container { padding: 20px; } 
-            .widget-container { width: 100%; }
+            .market-bar { padding: 40px 0 20px 0; }
+            .widget-wrapper { width: 100%; }
+            .widget-wrapper::before { left: 2%; top: 44px; font-size: 22px; }
         }
     </style>
 </head>
@@ -59,20 +99,22 @@
 </div>
 
 <div class="market-bar">
-    <div class="widget-container">
-        <div class="tradingview-widget-container">
-            <div class="tradingview-widget-container__widget"></div>
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
-            {
-              "symbol": "TVC:UKOIL",
-              "width": "100%",
-              "colorTheme": "dark",
-              "isTransparent": true,
-              "locale": "en"
-            }
-            </script>
-        </div>
-        </div>
+    <div class="widget-wrapper">
+        <div class="widget-container">
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js" async>
+                {
+                  "symbol": "TVC:UKOIL",
+                  "width": "100%",
+                  "colorTheme": "dark",
+                  "isTransparent": true,
+                  "locale": "en"
+                }
+                </script>
+            </div>
+            </div>
+    </div>
 </div>
 
 <div class="main-wrapper">
@@ -115,7 +157,7 @@
             let totalIncome = 0, totalValue = 0;
 
             if (!portfolio || portfolio.length === 0) {
-                body.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: #bdc3c7;">Portfolio is empty.</td></tr>';
+                body.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: #bdc3c7;">Portfolio empty.</td></tr>';
             } else {
                 body.innerHTML = portfolio.map(s => {
                     const income = (s.shares * s.dividend) / 100;
@@ -135,7 +177,7 @@
             document.getElementById('avg-yield').innerText = `Portfolio Yield: ${avgYield.toFixed(2)}%`;
 
         } catch (e) {
-            body.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: #e74c3c;">Connection Error: Upload stocks.json to GitHub.</td></tr>';
+            body.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: #e74c3c;">Connection Error.</td></tr>';
         }
     }
     window.onload = loadDividends;
