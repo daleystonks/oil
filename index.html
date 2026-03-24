@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Oil Portfolio & Dividend Tracker</title>
+    <title>Oil Dividend Tracker</title>
     <style>
         /* Global Styles - No text selection allowed anywhere */
         html, body { 
@@ -20,7 +20,7 @@
             -ms-user-select: none;
         }
         
-        /* Header Section */
+        /* Header Section - Doubled height with Gold Border */
         .header-spacer { 
             padding: 50px 20px; 
             text-align: center; 
@@ -32,15 +32,15 @@
 
         .header-logo { 
             margin: 0; 
-            font-size: 1.8rem; 
+            font-size: 2.2rem; /* Slightly larger now that text is shorter */
             font-weight: 800;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             text-transform: uppercase;
             color: #2ecc71; 
             text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
         }
 
-        /* Footer Section */
+        /* Footer Section - Matching Gold Border */
         footer {
             padding: 40px 20px;
             background: #2c3e50;
@@ -51,12 +51,11 @@
             letter-spacing: 1px;
         }
 
-        /* Market Bar & Widget Container */
         .market-bar { width: 100%; background: #1a252f; display: flex; justify-content: center; padding: 60px 0 30px 0; }
 
         .widget-wrapper { position: relative; width: 350px; height: 126px; }
         
-        /* The Overlay £ Sign */
+        /* The Overlay £ Sign for Brent Widget */
         .widget-wrapper::before {
             content: "£";
             position: absolute;
@@ -76,10 +75,9 @@
             background: transparent !important; 
             padding-left: 10px; 
             box-sizing: border-box;
-            pointer-events: none; /* Prevents clicks on the TradingView links */
+            pointer-events: none; 
         }
 
-        /* Main Content Layout */
         .main-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 20px 60px 20px; overflow-y: auto; }
         
         .container { 
@@ -98,17 +96,15 @@
         .big-number { font-size: 4em; font-weight: bold; color: #2ecc71; margin: 10px 0; text-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
         .avg-yield-text { font-size: 1.1em; color: #3498db; font-weight: 300; }
         
-        /* Table Styling */
         table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; }
         th, td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         th { color: #7f8c8d; text-transform: uppercase; font-size: 0.65em; letter-spacing: 1px; }
         .ticker-name { font-weight: bold; font-size: 1em; color: #ecf0f1; }
         .yield-badge { background: rgba(52, 152, 219, 0.2); color: #3498db; padding: 3px 8px; border-radius: 20px; font-size: 0.8em; border: 1px solid #3498db; }
 
-        /* Responsive Mobile Settings */
         @media (max-width: 600px) { 
             .header-spacer, footer { padding: 30px 10px; }
-            .header-logo { font-size: 1.1rem; }
+            .header-logo { font-size: 1.4rem; }
             .market-bar { padding: 40px 0 20px 0; }
             .widget-wrapper { width: 100%; }
         }
@@ -117,7 +113,7 @@
 <body>
 
 <div class="header-spacer">
-    <div class="header-logo">OIL PORTFOLIO MANAGEMENT SYSTEM</div>
+    <div class="header-logo">OIL DIVIDEND TRACKER</div>
 </div>
 
 <div class="market-bar">
