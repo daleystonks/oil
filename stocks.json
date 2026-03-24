@@ -1,35 +1,35 @@
 [
     {
         "ticker": "SHEL.L",
-        "shares": 1,
+        "shares": 2.6,
         "price": 3309,
         "dividend": 113.33083,
         "note": "Ex-Div 19-02-2026"
     },
     {
         "ticker": "BP.L",
-        "shares": 1,
+        "shares": 13.44,
         "price": 535.3,
         "dividend": 26.721742,
         "note": "Ex-Div 19-02-2026"
     },
     {
         "ticker": "HBR.L",
-        "shares": 1,
+        "shares": 15.15,
         "price": 282.2,
         "dividend": 15.959444,
         "note": "Ex-Div 09-04-2026"
     },
     {
         "ticker": "SQZ.L",
-        "shares": 1,
+        "shares": 17.34,
         "price": 252,
         "dividend": 16,
         "note": "Ex-Div 25-06-2026"
     },
     {
         "ticker": "ITH.L",
-        "shares": 1,
+        "shares": 17.32,
         "price": 247.32,
         "dividend": 25.069471,
         "note": "Ex-Div 26-03-2026"
