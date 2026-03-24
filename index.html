@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Public Dividend Tracker</title>
+    <style>
+        html, body { height: 100%; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a252f; color: white; display: flex; flex-direction: column; }
+        
+        /* Removed Nav Bar for privacy - Header only */
+        .header-spacer { padding: 20px; text-align: center; background: #2c3e50; border-bottom: 4px solid #27ae60; }
+        .header-spacer h1 { margin: 0; font-size: 1.2rem; letter-spacing: 1px; color: #2ecc71; }
+
+        .main-wrapper { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 900px; background: #34495e; padding: 40px; border-radius: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; }
+        .income-header { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 30px; margin-bottom: 30px; }
+        .income-label { text-transform: uppercase; letter-spacing: 2px; color: #bdc3c7; font-size: 0.9em; }
+        .big-number { font-size: 5em; font-weight: bold; color: #2ecc71; margin: 15px 0; text-shadow: 0 4px 10px rgba(46, 204, 113, 0.3); }
+        .avg-yield-text { font-size: 1.2em; color: #3498db; font-weight: 300; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; text-align: left; }
+        th, td { padding: 18px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { color: #7f8c8d; text-transform: uppercase; font-size: 0.7em; letter-spacing: 1px; }
+        .ticker-name { font-weight: bold; font-size: 1.1em; color: #ecf0f1; }
+        .yield-badge { background: rgba(52, 152, 219, 0.2); color: #3498db; padding: 4px 10px; border-radius: 20px; font-size: 0.85em; border: 1px solid #3498db; }
+        .footer-note { margin-top: 40px; font-size: 0.7em; color: #7f8c8d; }
+
+        @media (max-width: 600px) { .big-number { font-size: 3em; } .container { padding: 20px; } th, td { padding: 10px; font-size: 0.8em; } }
+    </style>
+</head>
+<body>
+
+<div class="header-spacer">
+    <h1>OIL PORTFOLIO TRACKER</h1>
+</div>
+
+<div class="main-wrapper">
+    <div class="container">
+        <div class="income-header">
+            <div class="income-label">Total Annual Dividend Income</div>
+            <div id="grand-total-div" class="big-number">£0.00</div>
+            <div id="avg-yield" class="avg-yield-text">Portfolio Yield: 0.00%</div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Stock</th>
+                    <th>Shares</th>
+                    <th>Annual Payout</th>
+                    <th>Yield</th>
+                </tr>
+            </thead>
+            <tbody id="div-body"></tbody>
+        </table>
+        
+        <div class="footer-note">
+            Last Live Update: <span id="last-mod">Checking...</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function loadDividends() {
+        const body = document.getElementById('div-body');
+        try {
+            const response = await fetch('stocks.json?v=' + Date.now());
+            if (!response.ok) throw new Error();
+            
+            // Get last modified date from the server headers
+            const lastMod = response.headers.get('Last-Modified') || "Just now";
+            document.getElementById('last-mod').innerText = lastMod;
+
+            const portfolio = await response.json();
+            let totalIncome = 0, totalValue = 0;
+
+            body.innerHTML = portfolio.map(s => {
+                const income = (s.shares * s.dividend) / 100;
+                const value = (s.shares * s.price) / 100;
+                totalIncome += income; totalValue += value;
+                return `<tr>
+                    <td class="ticker-name">${s.ticker}</td>
+                    <td>${s.shares.toLocaleString()}</td>
+                    <td style="color: #2ecc71; font-weight: bold;">£${income.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td><span class="yield-badge">${((s.dividend/s.price)*100).toFixed(2)}%</span></td>
+                </tr>`;
+            }).join('');
+
+            document.getElementById('grand-total-div').innerText = `£${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('avg-yield').innerText = `Average Portfolio Yield: ${((totalIncome / totalValue) * 100).toFixed(2)}%`;
+
+        } catch (e) {
+            body.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: #e74c3c;">Updating data file... please wait.</td></tr>';
+        }
+    }
+    window.onload = loadDividends;
+</script>
+</body>
+</html>
